@@ -11,5 +11,10 @@ Dichiarazioni_2019 <- Dichiarazioni_2019 %>%
   mutate(reddito_medio_dichiarato=
            Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti) %>%
   mutate_if(is.numeric, round, 2) %>%
-  select(Anno.di.imposta, Codice.Istat.Comune,Regione, Denominazione.Comune=Comune, Numero.contribuenti=Contribuenti, Reddito.imponibile...Ammontare.in.euro=Imponibile, reddito_medio_dichiarato="Imponibile pro capite")
-  
+  select(Anno.di.imposta, Codice.Istat.Comune,Regione, Comune=Denominazione.Comune, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, "Imponibile pro capite"=reddito_medio_dichiarato)
+
+
+Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>% 
+  filter(Regione=="Liguria")
+
+write.csv(Dichiarazioni_2019_Liguria, "prova_grafico.csv")
