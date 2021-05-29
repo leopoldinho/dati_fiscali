@@ -25,7 +25,7 @@ Dichiarazioni_2020 <- Dichiarazioni_2020 %>%
   mutate(reddito_medio_dichiarato=
            Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti) %>%
   mutate_if(is.numeric, round, 2) %>%
-  select(Anno.di.imposta, Codice.Istat.Comune,Regione, Comune=Denominazione.Comune, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, "Imponibile pro capite"=reddito_medio_dichiarato)
+  select(Anno.di.imposta, Codice.Istat.Comune,Regione,Sigla.Provincia, Comune=Denominazione.Comune, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, "Imponibile pro capite"=reddito_medio_dichiarato)
 
 
 Dichiarazioni_2020_Liguria <- Dichiarazioni_2020 %>% 
