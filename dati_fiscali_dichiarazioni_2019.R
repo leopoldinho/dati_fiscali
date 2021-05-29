@@ -29,6 +29,7 @@ Dichiarazioni_2020 <- Dichiarazioni_2020 %>%
 
 
 Dichiarazioni_2020_Liguria <- Dichiarazioni_2020 %>% 
-  filter(Regione=="Liguria")
+  filter(Regione=="Liguria") %>% 
+  filter(Sigla.Provincia=="SP")
 
 write.csv2(Dichiarazioni_2020_Liguria, "prova_grafico.csv")
