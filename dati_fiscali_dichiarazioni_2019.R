@@ -33,3 +33,25 @@ Dichiarazioni_2020_Liguria <- Dichiarazioni_2020 %>%
   filter(Sigla.Provincia=="SP")
 
 write.csv2(Dichiarazioni_2020_Liguria, "prova_grafico.csv")
+
+
+
+Dichiarazioni_2020 <- read.csv("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2019.csv")
+
+Dichiarazioni_2020_Genova <- Dichiarazioni_2020 %>% 
+  filter(Denominazione.Comune=="GENOVA")
+
+Dichiarazioni_2020_Genova <- Dichiarazioni_2020_Genova %>%
+  mutate(reddito_medio_dichiarato=
+           Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti, 
+         Perc_cont_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Frequenza/Numero.contribuenti*100,
+         red_medio_cont_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro/Reddito.complessivo.oltre.120000.euro...Frequenza
+         ) %>%
+  mutate_if(is.numeric, round, 2) %>%
+  select(CAP, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, Contribuenti_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Frequenza, reddito_medio_dichiarato,Perc_cont_scaglione_alto,red_medio_cont_scaglione_alto)
+
+
+
+
+write.csv2(Dichiarazioni_2020_Genova, "prova_grafico.csv")
+
