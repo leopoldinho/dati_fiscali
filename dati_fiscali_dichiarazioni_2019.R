@@ -19,9 +19,9 @@ Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>%
 
 #2020#
 
-Dichiarazioni_2020 <- read.csv("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2019.csv")
+Dichiarazioni_2020_ <- read.csv("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2019.csv")
 
-Dichiarazioni_2020 <- Dichiarazioni_2020 %>%
+Dichiarazioni_2020 <- Dichiarazioni_2020_ %>%
   mutate(reddito_medio_dichiarato=
            Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti, 
          Perc_reddito_scaglione_max=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro/Reddito.imponibile...Ammontare.in.euro*100,
@@ -40,6 +40,32 @@ Dichiarazioni_2020_Liguria <- Dichiarazioni_2020 %>%
 
 Dichiarazioni_2020_Genova <- Dichiarazioni_2020 %>% 
   filter(Denominazione.Comune=="GENOVA")
+
+Dichiarazioni_2020_frequenza <- Dichiarazioni_2020_ %>%
+  filter(Denominazione.Comune=="GENOVA") %>%
+  select(Anno.di.imposta, Reddito.complessivo.da.0.a.10000.euro...Frequenza,Reddito.complessivo.da.10000.a.15000.euro...Frequenza,
+         Reddito.complessivo.da.15000.a.26000.euro...Frequenza,
+         Reddito.complessivo.da.26000.a.55000.euro...Frequenza,
+         Reddito.complessivo.da.55000.a.75000.euro...Frequenza,
+         Reddito.complessivo.da.75000.a.120000.euro...Frequenza,
+         Reddito.complessivo.oltre.120000.euro...Frequenza) %>%
+  pivot_longer(- Anno.di.imposta, names_to = "Oggetto") %>%
+  select(-Anno.di.imposta) %>% rename(Contribuenti=value)
+
+Dichiarazioni_2020_ammontare <- Dichiarazioni_2020_ %>%
+  filter(Denominazione.Comune=="GENOVA") %>%
+  select(Anno.di.imposta, Reddito.complessivo.da.0.a.10000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.10000.a.15000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.15000.a.26000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.26000.a.55000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.55000.a.75000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.75000.a.120000.euro...Ammontare.in.euro,
+         Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro) %>%
+  pivot_longer(- Anno.di.imposta, names_to = "Oggetto") %>%
+  select(-Anno.di.imposta, -Oggetto) %>% rename(Reddito=value)
+
+Dichiarazioni_2020_piramide <- bind_cols(Dichiarazioni_2020_frequenza,Dichiarazioni_2020_ammontare)
+
 
 #2019#
 
