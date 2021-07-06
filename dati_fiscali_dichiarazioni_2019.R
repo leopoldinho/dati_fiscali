@@ -360,5 +360,5 @@ Dichiarazioni_2020_Genova_cap <- Dichiarazioni_2020_Genova_cap %>%
 
 
 
-write.csv2(Dichiaraz_genova_Serie_storica, "prova_grafico.csv")
+write.csv2(Dichiarazioni_2020_piramide, "prova_grafico.csv")
 
