@@ -11,3 +11,5 @@ Supermercati_Ita_2019 <- read_excel("Tav_3_SM.xls") %>%
 
 Supermercati_Ita_2019_Prov <- read_excel("Tav_5_SM.xls") %>%
   mutate(tipo="SM")
+
+write.csv2(contagi_decessi_sesso_eta, "decessi_eta.csv")
