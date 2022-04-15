@@ -3,19 +3,60 @@ library(devtools)
 library(tidyverse)
 library(googlesheets4)
 
-download.file("https://raw.githubusercontent.com/leopoldinho/dati_fiscali/main/Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2018.csv", "dichiarazioni_redditi_2019.csv") # download the file with the data
 
-Dichiarazioni_2019 <- read.csv2("dichiarazioni_redditi_2019.csv")
+#2021#
 
-Dichiarazioni_2019 <- Dichiarazioni_2019 %>%
+Dichiarazioni_2021_ <- read.csv2("https://raw.githubusercontent.com/leopoldinho/dati_fiscali/main/Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2020.csv")
+
+Dichiarazioni_2021 <- Dichiarazioni_2021_ %>%
   mutate(reddito_medio_dichiarato=
-           Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti) %>%
+           Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti, 
+         Perc_reddito_scaglione_max=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro/Reddito.imponibile...Ammontare.in.euro*100,
+         Perc_ricchi=Reddito.complessivo.oltre.120000.euro...Frequenza/Numero.contribuenti*100, scaglione_redditi_bassi=Reddito.complessivo.da.0.a.10000.euro...Ammontare.in.euro+Reddito.complessivo.da.10000.a.15000.euro...Ammontare.in.euro, contribuenti.bassi=Reddito.complessivo.da.0.a.10000.euro...Frequenza+Reddito.complessivo.da.10000.a.15000.euro...Frequenza,
+         Perc_redditi_bassi=scaglione_redditi_bassi/Reddito.imponibile...Ammontare.in.euro*100, Perc_contr_bassi=contribuenti.bassi/Numero.contribuenti*100) %>%
   mutate_if(is.numeric, round, 2) %>%
-  select(Anno.di.imposta, Codice.Istat.Comune,Regione, Comune=Denominazione.Comune, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, "Imponibile pro capite"=reddito_medio_dichiarato)
+  select(Anno.di.imposta, Codice.Istat=Codice.Istat.Comune,Regione,Sigla.Provincia,
+         Denominazione.Comune, Contribuenti=Numero.contribuenti,
+         Imponibile=Reddito.imponibile...Ammontare.in.euro,Perc_ricchi,
+         "Imponibile pro capite"=reddito_medio_dichiarato,Reddito_complessivo_ricchi=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro,
+         Reddito.complessivo.oltre.120000.euro...Frequenza,Perc_reddito_scaglione_max,scaglione_redditi_bassi,Perc_redditi_bassi,contribuenti.bassi,Perc_contr_bassi)
 
+write.csv2(Dichiarazioni_2021, "Comuni_irpef_2021_b.csv")
 
-Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>% 
+Dichiarazioni_2021_Liguria <- Dichiarazioni_2021 %>% 
   filter(Regione=="Liguria")
+
+write.csv2(Dichiarazioni_2021_Liguria, "Comuni_irpef_2021_Liguria.csv")
+
+Dichiarazioni_2021_Genova <- Dichiarazioni_2021 %>% 
+  filter(Denominazione.Comune=="GENOVA")
+
+Dichiarazioni_2021_frequenza <- Dichiarazioni_2021_ %>%
+  filter(Denominazione.Comune=="GENOVA") %>%
+  select(Anno.di.imposta, Reddito.complessivo.da.0.a.10000.euro...Frequenza,Reddito.complessivo.da.10000.a.15000.euro...Frequenza,
+         Reddito.complessivo.da.15000.a.26000.euro...Frequenza,
+         Reddito.complessivo.da.26000.a.55000.euro...Frequenza,
+         Reddito.complessivo.da.55000.a.75000.euro...Frequenza,
+         Reddito.complessivo.da.75000.a.120000.euro...Frequenza,
+         Reddito.complessivo.oltre.120000.euro...Frequenza) %>%
+  pivot_longer(- Anno.di.imposta, names_to = "Oggetto") %>%
+  select(-Anno.di.imposta) %>% rename(Contribuenti=value)
+
+Dichiarazioni_2021_ammontare <- Dichiarazioni_2021_ %>%
+  filter(Denominazione.Comune=="GENOVA") %>%
+  select(Anno.di.imposta, Reddito.complessivo.da.0.a.10000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.10000.a.15000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.15000.a.26000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.26000.a.55000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.55000.a.75000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.75000.a.120000.euro...Ammontare.in.euro,
+         Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro) %>%
+  pivot_longer(- Anno.di.imposta, names_to = "Oggetto") %>%
+  select(-Anno.di.imposta, -Oggetto) %>% rename(Reddito=value)
+
+Dichiarazioni_2021_piramide <- bind_cols(Dichiarazioni_2021_frequenza,Dichiarazioni_2021_ammontare)
+
+
 
 #2020#
 
@@ -358,7 +399,37 @@ Dichiarazioni_2020_Genova_cap <- Dichiarazioni_2020_Genova_cap %>%
   select(CAP, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, Contribuenti_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Frequenza, reddito_medio_dichiarato,Perc_cont_scaglione_alto,red_medio_cont_scaglione_alto)
 
 
+#2021 CAp
+
+Dichiarazioni_2021_cap <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2020.csv")
+
+Dichiarazioni_2021_Genova_cap <- Dichiarazioni_2021_cap %>%
+  filter(Denominazione.Comune=="GENOVA")
+
+Dichiarazioni_2021_Genova_cap <- Dichiarazioni_2021_Genova_cap %>%
+  mutate(reddito_medio_dichiarato=
+           Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti,
+         Perc_cont_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Frequenza/Numero.contribuenti*100,
+         red_medio_cont_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro/Reddito.complessivo.oltre.120000.euro...Frequenza
+  ) %>%
+  mutate_if(is.numeric, round, 2) %>%
+  select(CAP, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, Contribuenti_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Frequenza, reddito_medio_dichiarato,Perc_cont_scaglione_alto,red_medio_cont_scaglione_alto)
 
 
 write.csv2(Dichiarazioni_2020_piramide, "prova_grafico.csv")
 
+
+#VEcchio
+download.file("https://raw.githubusercontent.com/leopoldinho/dati_fiscali/main/Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2018.csv", "dichiarazioni_redditi_2019.csv") # download the file with the data
+
+Dichiarazioni_2019 <- read.csv2("dichiarazioni_redditi_2019.csv")
+
+Dichiarazioni_2019 <- Dichiarazioni_2019 %>%
+  mutate(reddito_medio_dichiarato=
+           Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti) %>%
+  mutate_if(is.numeric, round, 2) %>%
+  select(Anno.di.imposta, Codice.Istat.Comune,Regione, Comune=Denominazione.Comune, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, "Imponibile pro capite"=reddito_medio_dichiarato)
+
+
+Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>% 
+  filter(Regione=="Liguria")
