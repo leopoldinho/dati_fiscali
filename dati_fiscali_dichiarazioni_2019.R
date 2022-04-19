@@ -56,7 +56,7 @@ Dichiarazioni_2021_ammontare <- Dichiarazioni_2021_ %>%
 
 Dichiarazioni_2021_piramide <- bind_cols(Dichiarazioni_2021_frequenza,Dichiarazioni_2021_ammontare)
 
-
+write.csv2(Dichiarazioni_2021_Genova, "genova_2020.csv")
 
 #2020#
 
@@ -384,8 +384,9 @@ Dichiaraz_genova_Serie_storica <- bind_rows(Dichiarazioni_2009_Genova,Dichiarazi
 
 #2020 CAp
 
-Dichiarazioni_2020_cap <- read.csv("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2019.csv")
+Dichiarazioni_2020_cap <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2019.csv")
 
+#Genova
 Dichiarazioni_2020_Genova_cap <- Dichiarazioni_2020_cap %>% 
   filter(Denominazione.Comune=="GENOVA")
 
@@ -415,6 +416,15 @@ Dichiarazioni_2021_Genova_cap <- Dichiarazioni_2021_Genova_cap %>%
   ) %>%
   mutate_if(is.numeric, round, 2) %>%
   select(CAP, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, Contribuenti_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Frequenza, reddito_medio_dichiarato,Perc_cont_scaglione_alto,red_medio_cont_scaglione_alto)
+
+#Confronti 2019-2020
+
+Dichiarazioni_2020_Genova_cap_tmp <- Dichiarazioni_2020_Genova_cap %>%select(CAP, reddito_medio_dichiarato_2019=reddito_medio_dichiarato)
+
+Confronti_19_20_genova <- left_join(Dichiarazioni_2021_Genova_cap,Dichiarazioni_2020_Genova_cap_tmp, 
+                                    by="CAP") %>%
+  mutate(diff=reddito_medio_dichiarato-reddito_medio_dichiarato_2019, 
+         diff_perc=diff/reddito_medio_dichiarato_2019*100)
 
 #Milano
 Dichiarazioni_2021_Milano_cap <- Dichiarazioni_2021_cap %>%
