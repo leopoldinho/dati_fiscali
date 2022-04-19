@@ -426,6 +426,8 @@ Confronti_19_20_genova <- left_join(Dichiarazioni_2021_Genova_cap,Dichiarazioni_
   mutate(diff=reddito_medio_dichiarato-reddito_medio_dichiarato_2019, 
          diff_perc=diff/reddito_medio_dichiarato_2019*100)
 
+write.csv(Confronti_19_20_genova, "redditi_confronto.csv")
+
 #Milano
 Dichiarazioni_2021_Milano_cap <- Dichiarazioni_2021_cap %>%
   filter(Denominazione.Comune=="MILANO")
