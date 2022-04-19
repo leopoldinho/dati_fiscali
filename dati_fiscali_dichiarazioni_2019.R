@@ -384,7 +384,7 @@ Dichiaraz_genova_Serie_storica <- bind_rows(Dichiarazioni_2009_Genova,Dichiarazi
 
 #2020 CAp
 
-Dichiarazioni_2020_cap <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2019.csv")
+Dichiarazioni_2020_cap <- read.csv2("https://raw.githubusercontent.com/leopoldinho/dati_fiscali/main/Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2019.csv")
 
 #Genova
 Dichiarazioni_2020_Genova_cap <- Dichiarazioni_2020_cap %>% 
