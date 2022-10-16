@@ -23,6 +23,11 @@ Dichiarazioni_2021 <- Dichiarazioni_2021_ %>%
 
 write.csv2(Dichiarazioni_2021, "Comuni_irpef_2021_b.csv")
 
+
+summary_dichiarazioni_2021 = Dichiarazioni_2021_ %>%
+  group_by(Anno.di.imposta) %>%
+  summarise(Reddito_medio=sum(Reddito.imponibile...Ammontare.in.euro)/ sum(Numero.contribuenti))
+
 Dichiarazioni_2021_Liguria <- Dichiarazioni_2021 %>% 
   filter(Regione=="Liguria")
 
