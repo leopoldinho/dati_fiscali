@@ -486,5 +486,6 @@ geom_sf(aes(fill = values),
         linetype = 1,
         lwd = 0.25)
 
-
+#https://r-graph-gallery.com/custom-fonts-in-R-and-ggplot2.html
+#https://r-charts.com/spatial/choropleth-map-ggplot2/
 
