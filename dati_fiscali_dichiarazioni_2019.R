@@ -471,17 +471,32 @@ Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>%
 #Scarico dati geografici e unisco a dati redditi
 
 Italia_comuni <- st_read("Confini_Comuni_Istat_2022.json")%>%
-  rename(Codice.Istat=PRO_COM)
+  rename(Cod_com=PRO_COM)
 
-Italia_comuni_redditi_geo = left_join(Italia_comuni, Dichiarazioni_2021, by="Codice.Istat")
+Italia_comuni_redditi_geo = left_join(Italia_comuni, Dichiarazioni_2021, by="Cod_com")
 
 #check with map
 Italia_comuni_redditi_geo |>
   ggplot() +
-  geom_sf(aes(fill = "Imponibile pro capite")) +
+  geom_sf(aes(fill = "Imponibile pro capite"), color=NA) +
+  labs(title = "Reddito Istat procapite nei comuni italiani",
+       subtitle = "",
+       caption = "",
+       fill = "???") +
+  # Custom palette
+  scale_fill_manual(values = pal,
+                    drop = FALSE,
+                    label = "labs_plot",
+                    # Legend
+                    guide = guide_legend(direction = "horizontal",
+                                         nrow = 1,
+                                         label.position = "bottom")) + 
   theme_void()
 
-geom_sf(aes(fill = values), 
+pal <- hcl.colors(6, "Inferno", rev = TRUE, alpha = 0.7)
+
++
+  geom_sf(aes(fill = values), 
         color = "white",
         linetype = 1,
         lwd = 0.25)
