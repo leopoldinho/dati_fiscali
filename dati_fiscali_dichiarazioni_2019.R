@@ -2,7 +2,7 @@
 library(devtools) 
 library(tidyverse)
 library(googlesheets4)
-
+library(sf)
 
 #2021#
 
@@ -464,3 +464,27 @@ Dichiarazioni_2019 <- Dichiarazioni_2019 %>%
 
 Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>% 
   filter(Regione=="Liguria")
+
+
+#MAPPA REDDITI COMUNE 
+
+#Scarico dati geografici e unisco a dati redditi
+
+Italia_comuni <- st_read("Confini_Comuni_Istat_2022.json")%>%
+  rename(Codice.Istat=PRO_COM)
+
+Italia_comuni_redditi_geo = left_join(Italia_comuni, Dichiarazioni_2021, by="Codice.Istat")
+
+#check with map
+Italia_comuni_redditi_geo |>
+  ggplot() +
+  geom_sf(aes(fill = "Imponibile pro capite")) +
+  theme_void()
+
+geom_sf(aes(fill = values), 
+        color = "white",
+        linetype = 1,
+        lwd = 0.25)
+
+
+
