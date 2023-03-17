@@ -483,14 +483,34 @@ Italia_comuni_redditi_geo |>
   geom_sf()
 
 
+# create color palette
+
+library(MetBrewer)
+library(RColorBrewer)
+library(viridis)
+
+#esempi
+c1 <- met.brewer("Hokusai2")
+mypalette<-brewer.pal(7,"Greens")
+pal <- hcl.colors(6, "Inferno", rev = TRUE, alpha = 0.7)
+
+
 #MAPPA
 
 mappa_redditi = ggplot(Italia_comuni_redditi_geo) +
-  geom_sf(color = "white", size = 0.1,aes(fill = Imponibile_procapite)) +
-  theme_void()+
+  geom_sf(color = "white",
+          size = 0.05,
+          aes(fill = Imponibile_procapite)) +
+  #scale_fill_met_c("Hokusai3", override.order=TRUE)+
+  #scale_fill_binned_sequential(palette = "Blues 2",begin=0.25, end=1, alpha=1)+
+  #scale_fill_manual(values = c1,drop = FALSE,na.value = "grey80")+
+  scale_fill_manual(values=met.brewer("Greek", 5))
+  theme_void() +
   theme(legend.position = "none")
 
 mappa_redditi
+
+#interessante per mappe con geom_sf: https://r-spatial.org/r/2018/10/25/ggplot2-sf-2.html
 
 
 ggsave(
