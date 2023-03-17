@@ -473,9 +473,36 @@ Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>%
 Italia_comuni <- st_read("Confini_Comuni_Istat_2022.json")%>%
   rename(Cod_com=PRO_COM)
 
-Italia_comuni_redditi_geo = left_join(Italia_comuni, Dichiarazioni_2021, by="Cod_com")
+Italia_comuni_redditi_geo = left_join(Italia_comuni, Dichiarazioni_2021, by="Cod_com")%>%
+  rename(Imponibile_procapite="Imponibile pro capite 2020")
 
-#check with map
+# check with map
+
+Italia_comuni_redditi_geo |>
+  ggplot() +
+  geom_sf()
+
+
+#MAPPA
+
+mappa_redditi = ggplot(Italia_comuni_redditi_geo) +
+  geom_sf(color = "white", size = 0.1,aes(fill = Imponibile_procapite)) +
+  theme_void()+
+  theme(legend.position = "none")
+
+mappa_redditi
+
+
+ggsave(
+  mappa_redditi,
+  filename = "redditi_prova.jpg",
+  width = 1000,
+  height = 2000,
+  units = "px",
+  bg="white", dpi = 140
+)
+
+#Mappa Choropleth
 Italia_comuni_redditi_geo |>
   ggplot() +
   geom_sf(aes(fill = "Imponibile pro capite"), color=NA) +
