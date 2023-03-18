@@ -502,9 +502,9 @@ mappa_redditi = ggplot(Italia_comuni_redditi_geo) +
           size = 0.05,
           aes(fill = Imponibile_procapite)) +
   #scale_fill_met_c("Hokusai3", override.order=TRUE)+
-  #scale_fill_binned_sequential(palette = "Blues 2",begin=0.25, end=1, alpha=1)+
+  scale_fill_binned_sequential(palette = "Blues 2",begin=0.25, end=1, alpha=1)+
   #scale_fill_manual(values = c1,drop = FALSE,na.value = "grey80")+
-  scale_fill_manual(values=met.brewer("Greek", 5))
+  #scale_fill_manual(values=met.brewer("Greek", 5))
   theme_void() +
   theme(legend.position = "none")
 
