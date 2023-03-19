@@ -502,34 +502,45 @@ pretty_choro_map <- Italia_comuni_redditi_geo %>%
            
            #Opzioni di scale
            
-           #scale_fill_viridis("Imponibile_procapite",option="magma",breaks=c(10000,20000,30000,40000)) +
+           scale_fill_viridis("Imponibile_procapite",option="magma") +
            
-           scale_fill_met_c(
-             "Hokusai2",
-             override.order = TRUE,
-             breaks = c(10000, 20000, 30000, 40000)
-           ) +
+           #scale_fill_met_c(
+           #  "Hokusai2",
+            # override.order = TRUE,
+             #breaks = c(10000, 20000, 30000, 40000)) +
            
            #Apparato testuale
            
            labs(title = "Redditi dichiarati, quel divario tra nord e sud",
                 subtitle = "Il reddito imponibile medio di ciascun comune",
                 caption = "Fonte: Elaborazione Sky TG24 su dati Ministero delle Finanze ") +
+    guides(fill=guide_legend(
+    direction = "horizontal",
+    keyheight = unit(1.15, units = "mm"),
+    keywidth = unit(15, units = "mm"),
+    title.position = 'top',
+    title.hjust = 0.5,
+    label.hjust = .5,
+    nrow = 1,
+    byrow = T,
+    reverse = F,
+    label.position = "bottom"
+  ))+
   theme_minimal() +
   theme(panel.background = element_blank(),
         legend.background = element_blank(),
-        legend.position = c(.45, .04),
+        legend.position = "top",
         panel.border = element_blank(),
         panel.grid.minor = element_blank(),
         panel.grid.major = element_line(color = "white", size = 0),
         plot.title = element_text(size=16, color="grey60", hjust=0, vjust=0, face="bold"),
         plot.subtitle = element_text(size=12, color="grey60", hjust=0, vjust=0),
-        plot.caption = element_text(size=9, color="grey60", hjust=0, vjust=0),
-        axis.title.x = element_text(size=7, color="grey60", hjust=0.5, vjust=5),
-        legend.text = element_text(size=10, color="grey20"),
-        legend.title = element_text(size=11, color="grey20"),
+        plot.caption = element_text(size=7, color="grey60", hjust=0, vjust=0),
+        axis.title.x = element_text(size=7, color="grey60", hjust=0, vjust=5),
+        legend.text = element_text(size=8, color="grey20"),
+        legend.title = element_blank(),
         strip.text = element_text(size=12),
-        #plot.margin = unit(c(t=-2, r=-2, b=-2, l=-2),"lines"), #added these narrower margins to enlarge map
+        #plot.margin = unit(c(t=1, r=1, b=1, l=1),"lines"), #added these narrower margins to enlarge map
         axis.title.y = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_blank(),
