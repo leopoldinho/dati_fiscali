@@ -548,7 +548,12 @@ pretty_choro_map <- Italia_comuni_redditi_geo %>%
         )
   
 pretty_choro_map
-  
+
+
+#continuare
+
+# https://r-charts.com/spatial/choropleth-map-ggplot2/
+# https://r-spatial.org/r/2018/10/25/ggplot2-sf-2.html
 
 
 
