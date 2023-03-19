@@ -3,6 +3,7 @@ library(devtools)
 library(tidyverse)
 library(googlesheets4)
 library(sf)
+library(viridis)
 
 #2021#
 
@@ -470,10 +471,9 @@ Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>%
 
 #Scarico dati geografici e unisco a dati redditi
 
-Italia_comuni <- st_read("Confini_Comuni_Istat_2022.json")%>%
-  rename(Cod_com=PRO_COM)
+Italia_comuni <- st_read("Confini_Comuni_Istat_2022.json")
 
-Italia_comuni_redditi_geo = left_join(Italia_comuni, Dichiarazioni_2021, by="Cod_com")%>%
+Italia_comuni_redditi_geo = left_join(Italia_comuni, Dichiarazioni_2021, by=c("PRO_COM"="Cod_com"))%>%
   rename(Imponibile_procapite="Imponibile pro capite 2020")
 
 # check with map
@@ -481,6 +481,64 @@ Italia_comuni_redditi_geo = left_join(Italia_comuni, Dichiarazioni_2021, by="Cod
 Italia_comuni_redditi_geo |>
   ggplot() +
   geom_sf()
+
+
+#simple choromap
+
+simple_choro_map <- Italia_comuni_redditi_geo %>% 
+  ggplot(aes(fill = Imponibile_procapite)) + # create a ggplot object and 
+  # change its fill colour according to median_age
+  geom_sf() # plot all local authority geometries
+
+simple_choro_map
+
+
+
+#prettier choromap
+pretty_choro_map <- Italia_comuni_redditi_geo %>%
+  ggplot(aes(fill = Imponibile_procapite))+ 
+         geom_sf(colour = NA) + # Adding 'colour = NA' removes boundaries
+           #around each comune (lasciare solo geom_Sf se voglio far vedere i confini dei comuni)
+           
+           #Opzioni di scale
+           
+           #scale_fill_viridis("Imponibile_procapite",option="magma",breaks=c(10000,20000,30000,40000)) +
+           
+           scale_fill_met_c(
+             "Hokusai2",
+             override.order = TRUE,
+             breaks = c(10000, 20000, 30000, 40000)
+           ) +
+           
+           #Apparato testuale
+           
+           labs(title = "Redditi dichiarati, quel divario tra nord e sud",
+                subtitle = "Il reddito imponibile medio di ciascun comune",
+                caption = "Fonte: Elaborazione Sky TG24 su dati Ministero delle Finanze ") +
+  theme_minimal() +
+  theme(panel.background = element_blank(),
+        legend.background = element_blank(),
+        legend.position = c(.45, .04),
+        panel.border = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_line(color = "white", size = 0),
+        plot.title = element_text(size=16, color="grey60", hjust=0, vjust=0, face="bold"),
+        plot.subtitle = element_text(size=12, color="grey60", hjust=0, vjust=0),
+        plot.caption = element_text(size=9, color="grey60", hjust=0, vjust=0),
+        axis.title.x = element_text(size=7, color="grey60", hjust=0.5, vjust=5),
+        legend.text = element_text(size=10, color="grey20"),
+        legend.title = element_text(size=11, color="grey20"),
+        strip.text = element_text(size=12),
+        #plot.margin = unit(c(t=-2, r=-2, b=-2, l=-2),"lines"), #added these narrower margins to enlarge map
+        axis.title.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()
+        )
+  
+pretty_choro_map
+  
+
 
 
 # create color palette
@@ -502,7 +560,7 @@ mappa_redditi = ggplot(Italia_comuni_redditi_geo) +
           size = 0.05,
           aes(fill = Imponibile_procapite)) +
   #scale_fill_met_c("Hokusai3", override.order=TRUE)+
-  scale_fill_binned_sequential(palette = "Blues 2",begin=0.25, end=1, alpha=1)+
+  #scale_fill_binned_sequential(palette = "Blues 2",begin=0.25, end=1, alpha=1)+
   #scale_fill_manual(values = c1,drop = FALSE,na.value = "grey80")+
   #scale_fill_manual(values=met.brewer("Greek", 5))
   theme_void() +
