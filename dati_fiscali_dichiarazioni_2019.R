@@ -4,6 +4,7 @@ library(tidyverse)
 library(googlesheets4)
 library(sf)
 library(viridis)
+library(showtext)
 
 #2021#
 
@@ -492,7 +493,11 @@ simple_choro_map <- Italia_comuni_redditi_geo %>%
 
 simple_choro_map
 
+#font
 
+font_add("SkyText", "Sky.ttf")
+showtext_auto()
+font = "SkyText"
 
 #prettier choromap
 pretty_choro_map <- Italia_comuni_redditi_geo %>%
@@ -512,7 +517,7 @@ pretty_choro_map <- Italia_comuni_redditi_geo %>%
            #Apparato testuale
            
            labs(title = "Redditi dichiarati, quel divario tra nord e sud",
-                subtitle = "Il reddito imponibile medio di ciascun comune",
+                subtitle = "Il reddito imponibile medio di ciascun comune nel 2021",
                 caption = "Fonte: Elaborazione Sky TG24 su dati Ministero delle Finanze ") +
     guides(fill=guide_legend(
     direction = "horizontal",
@@ -533,14 +538,14 @@ pretty_choro_map <- Italia_comuni_redditi_geo %>%
         panel.border = element_blank(),
         panel.grid.minor = element_blank(),
         panel.grid.major = element_line(color = "white", size = 0),
-        plot.title = element_text(size=16, color="grey60", hjust=0, vjust=0, face="bold"),
-        plot.subtitle = element_text(size=12, color="grey60", hjust=0, vjust=0),
-        plot.caption = element_text(size=7, color="grey60", hjust=0, vjust=0),
-        axis.title.x = element_text(size=7, color="grey60", hjust=0, vjust=5),
+        plot.title = element_text(size=18, color="grey60", hjust=0, vjust=0,family = font, face="bold"),
+        plot.subtitle = element_text(size=14, color="grey60", hjust=0, vjust=0,family = font),
+        plot.caption = element_text(size=8, color="grey60", hjust=0, vjust=0,family = font),
+        axis.title.x = element_text(size=7, color="grey60", hjust=0, vjust=5,family = font),
         legend.text = element_text(size=8, color="grey20"),
         legend.title = element_blank(),
         strip.text = element_text(size=12),
-        #plot.margin = unit(c(t=1, r=1, b=1, l=1),"lines"), #added these narrower margins to enlarge map
+        plot.margin = unit(c(10, 10, 10, 10), "mm"),
         axis.title.y = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_blank(),
@@ -548,6 +553,17 @@ pretty_choro_map <- Italia_comuni_redditi_geo %>%
         )
   
 pretty_choro_map
+
+#Salvo il grafico
+map1 <- pretty_choro_map
+ggsave(
+  map1,
+  filename = "redditi_comuni_2021_sky.jpg",
+  width = 1000,
+  height = 1000,
+  units = "px",
+  bg="white", dpi = 140
+)
 
 
 #continuare
