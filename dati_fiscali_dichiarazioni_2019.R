@@ -6,6 +6,68 @@ library(sf)
 library(viridis)
 library(showtext)
 
+
+#2022#
+
+Dichiarazioni_2022_ <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2021.csv", sep=";")
+
+Dichiarazioni_2022 <- Dichiarazioni_2022_ %>%
+  mutate(reddito_medio_dichiarato=
+           Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti, 
+         Perc_reddito_scaglione_max=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro/Reddito.imponibile...Ammontare.in.euro*100,
+         Perc_ricchi=Reddito.complessivo.oltre.120000.euro...Frequenza/Numero.contribuenti*100, scaglione_redditi_bassi=Reddito.complessivo.da.0.a.10000.euro...Ammontare.in.euro+Reddito.complessivo.da.10000.a.15000.euro...Ammontare.in.euro, contribuenti.bassi=Reddito.complessivo.da.0.a.10000.euro...Frequenza+Reddito.complessivo.da.10000.a.15000.euro...Frequenza,
+         Perc_redditi_bassi=scaglione_redditi_bassi/Reddito.imponibile...Ammontare.in.euro*100, Perc_contr_bassi=contribuenti.bassi/Numero.contribuenti*100) %>%
+  mutate_if(is.numeric, round, 2) %>%
+  select(Anno.di.imposta, Codice.Istat=Codice.Istat.Comune,Regione,Sigla.Provincia,
+         Denominazione.Comune, Contribuenti=Numero.contribuenti,
+         Imponibile=Reddito.imponibile...Ammontare.in.euro,Perc_ricchi,
+         "Imponibile pro capite"=reddito_medio_dichiarato,Reddito_complessivo_ricchi=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro,
+         Reddito.complessivo.oltre.120000.euro...Frequenza,Perc_reddito_scaglione_max,scaglione_redditi_bassi,Perc_redditi_bassi,contribuenti.bassi,Perc_contr_bassi)
+
+write.csv2(Dichiarazioni_2022, "Comuni_irpef_2022_b.csv")
+
+
+summary_dichiarazioni_2022 = Dichiarazioni_2022_ %>%
+  group_by(Anno.di.imposta) %>%
+  summarise(Reddito_medio=sum(Reddito.imponibile...Ammontare.in.euro)/ sum(Numero.contribuenti))
+
+Dichiarazioni_2022_Liguria <- Dichiarazioni_2022 %>% 
+  filter(Regione=="Liguria")
+
+write.csv2(Dichiarazioni_2022_Liguria, "Comuni_irpef_2022_Liguria.csv")
+
+Dichiarazioni_2022_Genova <- Dichiarazioni_2022 %>% 
+  filter(Denominazione.Comune=="GENOVA")
+
+Dichiarazioni_2022_frequenza <- Dichiarazioni_2022_ %>%
+  filter(Denominazione.Comune=="GENOVA") %>%
+  select(Anno.di.imposta, Reddito.complessivo.da.0.a.10000.euro...Frequenza,Reddito.complessivo.da.10000.a.15000.euro...Frequenza,
+         Reddito.complessivo.da.15000.a.26000.euro...Frequenza,
+         Reddito.complessivo.da.26000.a.55000.euro...Frequenza,
+         Reddito.complessivo.da.55000.a.75000.euro...Frequenza,
+         Reddito.complessivo.da.75000.a.120000.euro...Frequenza,
+         Reddito.complessivo.oltre.120000.euro...Frequenza) %>%
+  pivot_longer(- Anno.di.imposta, names_to = "Oggetto") %>%
+  select(-Anno.di.imposta) %>% rename(Contribuenti=value)
+
+Dichiarazioni_2022_ammontare <- Dichiarazioni_2022_ %>%
+  filter(Denominazione.Comune=="GENOVA") %>%
+  select(Anno.di.imposta, Reddito.complessivo.da.0.a.10000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.10000.a.15000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.15000.a.26000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.26000.a.55000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.55000.a.75000.euro...Ammontare.in.euro,
+         Reddito.complessivo.da.75000.a.120000.euro...Ammontare.in.euro,
+         Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro) %>%
+  pivot_longer(- Anno.di.imposta, names_to = "Oggetto") %>%
+  select(-Anno.di.imposta, -Oggetto) %>% rename(Reddito=value)
+
+Dichiarazioni_2022_piramide <- bind_cols(Dichiarazioni_2022_frequenza,Dichiarazioni_2022_ammontare)
+
+write.csv2(Dichiarazioni_2022_Genova, "genova_2021.csv")
+
+
+
 #2021#
 
 Dichiarazioni_2021_ <- read.csv2("https://raw.githubusercontent.com/leopoldinho/dati_fiscali/main/Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2020.csv")
@@ -423,6 +485,11 @@ Dichiarazioni_2021_Genova_cap <- Dichiarazioni_2021_Genova_cap %>%
   ) %>%
   mutate_if(is.numeric, round, 2) %>%
   select(CAP, Contribuenti=Numero.contribuenti, Imponibile=Reddito.imponibile...Ammontare.in.euro, Contribuenti_scaglione_alto=Reddito.complessivo.oltre.120000.euro...Frequenza, reddito_medio_dichiarato,Perc_cont_scaglione_alto,red_medio_cont_scaglione_alto)
+
+
+#2022 Cap
+
+Dichiarazioni_2022_cap <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2021.csv")
 
 #Confronti 2019-2020
 
