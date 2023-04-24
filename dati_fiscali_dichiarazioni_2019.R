@@ -535,6 +535,11 @@ Dichiarazioni_2022_Torino_cap = Dichiarazioni_2022_cap %>%
 
 write.csv2(Dichiarazioni_2022_Torino_cap, "Irpef_2021_To.csv")
 
+Dichiarazioni_2022_Napoli_cap = Dichiarazioni_2022_cap %>%
+  filter(Denominazione.Comune=="NAPOLI")
+
+write.csv2(Dichiarazioni_2022_Napoli_cap, "Irpef_2021_NA.csv")
+
 
 #Confronti 2019-2020
 
