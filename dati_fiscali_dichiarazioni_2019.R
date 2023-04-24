@@ -518,8 +518,23 @@ Dichiarazioni_2022_cap <- Dichiarazioni_2022_cap_ %>%
 Dichiarazioni_2022_Genova_cap = Dichiarazioni_2022_cap %>%
   filter(Denominazione.Comune=="GENOVA")
 
+write.csv2(Dichiarazioni_2022_Genova_cap, "Irpef_2021_GE.csv")
+
 Dichiarazioni_2022_Roma_cap = Dichiarazioni_2022_cap %>%
   filter(Denominazione.Comune=="ROMA")
+
+write.csv2(Dichiarazioni_2022_Roma_cap, "Irpef_2021_RM.csv")
+
+Dichiarazioni_2022_Milano_cap = Dichiarazioni_2022_cap %>%
+  filter(Denominazione.Comune=="MILANO")
+
+write.csv2(Dichiarazioni_2022_Milano_cap, "Irpef_2021_MI.csv")
+
+Dichiarazioni_2022_Torino_cap = Dichiarazioni_2022_cap %>%
+  filter(Denominazione.Comune=="TORINO")
+
+write.csv2(Dichiarazioni_2022_Torino_cap, "Irpef_2021_To.csv")
+
 
 #Confronti 2019-2020
 
