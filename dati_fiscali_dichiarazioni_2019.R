@@ -540,6 +540,8 @@ Dichiarazioni_2022_Napoli_cap = Dichiarazioni_2022_cap %>%
 
 write.csv2(Dichiarazioni_2022_Napoli_cap, "Irpef_2021_NA.csv")
 
+write.csv(Dichiarazioni_2022_cap, "Irpef_2021_tot.csv")
+
 
 #Confronti 2019-2020
 
