@@ -7,6 +7,41 @@ library(viridis)
 library(showtext)
 
 
+#2023#
+
+Dichiarazioni_2023_ <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2022.csv", sep=";")
+
+Dichiarazioni_2023 <- Dichiarazioni_2023_ %>%
+  mutate(reddito_medio_dichiarato=
+           Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti, 
+         Perc_reddito_scaglione_max=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro/Reddito.imponibile...Ammontare.in.euro*100,
+         Perc_ricchi=Reddito.complessivo.oltre.120000.euro...Frequenza/Numero.contribuenti*100, scaglione_redditi_bassi=Reddito.complessivo.da.0.a.10000.euro...Ammontare.in.euro+Reddito.complessivo.da.10000.a.15000.euro...Ammontare.in.euro, contribuenti.bassi=Reddito.complessivo.da.0.a.10000.euro...Frequenza+Reddito.complessivo.da.10000.a.15000.euro...Frequenza,
+         Perc_redditi_bassi=scaglione_redditi_bassi/Reddito.imponibile...Ammontare.in.euro*100, Perc_contr_bassi=contribuenti.bassi/Numero.contribuenti*100) %>%
+  mutate_if(is.numeric, round, 2) %>%
+  select(Anno.di.imposta, Codice.Istat=Codice.Istat.Comune,Regione,Sigla.Provincia,
+         Denominazione.Comune, Contribuenti=Numero.contribuenti,
+         Imponibile=Reddito.imponibile...Ammontare.in.euro,Perc_ricchi,
+         "Imponibile pro capite"=reddito_medio_dichiarato,Reddito_complessivo_ricchi=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro,
+         Reddito.complessivo.oltre.120000.euro...Frequenza,Perc_reddito_scaglione_max,scaglione_redditi_bassi,Perc_redditi_bassi,contribuenti.bassi,Perc_contr_bassi)
+
+write.csv2(Dichiarazioni_2023, "Comuni_irpef_2023_b.csv")
+
+
+summary_dichiarazioni_2023 = Dichiarazioni_2023_ %>%
+  group_by(Anno.di.imposta) %>%
+  summarise(Reddito_medio=sum(Reddito.imponibile...Ammontare.in.euro)/ sum(Numero.contribuenti))
+
+Dichiarazioni_2023_Liguria <- Dichiarazioni_2023 %>% 
+  filter(Regione=="Liguria")
+
+write.csv(Dichiarazioni_2023_Liguria, "Comuni_irpef_2023_Liguria.csv")
+
+
+
+
+
+
+
 #2022#
 
 Dichiarazioni_2022_ <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2021.csv", sep=";")
