@@ -577,6 +577,83 @@ write.csv2(Dichiarazioni_2022_Napoli_cap, "Irpef_2021_NA.csv")
 
 write.csv(Dichiarazioni_2022_cap, "Irpef_2021_tot.csv")
 
+# Cap 2023
+
+Dichiarazioni_2023_cap_ <-
+  read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2022.csv",
+            sep = ";")
+
+Dichiarazioni_2023_cap <- Dichiarazioni_2023_cap_ %>%
+  mutate(
+    reddito_medio_dichiarato =
+      Reddito.imponibile...Ammontare.in.euro / Numero.contribuenti,
+    Perc_cont_scaglione_alto = Reddito.complessivo.oltre.120000.euro...Frequenza /
+      Numero.contribuenti * 100,
+    red_medio_cont_scaglione_alto = Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro /
+      Reddito.complessivo.oltre.120000.euro...Frequenza
+  ) %>%
+  mutate_if(is.numeric, round, 2) %>%
+  select(
+    Denominazione.Comune,
+    CAP,
+    Contribuenti = Numero.contribuenti,
+    Imponibile = Reddito.imponibile...Ammontare.in.euro,
+    Contribuenti_scaglione_alto = Reddito.complessivo.oltre.120000.euro...Frequenza,
+    reddito_medio_dichiarato,
+    Perc_cont_scaglione_alto,
+    red_medio_cont_scaglione_alto
+  )
+
+
+Dichiarazioni_2023_Genova_cap = Dichiarazioni_2023_cap %>%
+  filter(Denominazione.Comune=="GENOVA")
+
+write.csv2(Dichiarazioni_2023_Genova_cap, "Irpef_2022_GE.csv")
+
+Dichiarazioni_2023_Spezia_cap = Dichiarazioni_2023_cap %>%
+  filter(Denominazione.Comune=="LA SPEZIA")
+
+write.csv2(Dichiarazioni_2023_Spezia_cap, "Irpef_2022_SP.csv")
+
+
+Dichiarazioni_2023_Roma_cap = Dichiarazioni_2023_cap %>%
+  filter(Denominazione.Comune=="ROMA")
+
+write.csv2(Dichiarazioni_2023_Roma_cap, "Irpef_2022_RM.csv")
+
+Dichiarazioni_2023_Milano_cap = Dichiarazioni_2023_cap %>%
+  filter(Denominazione.Comune=="MILANO")
+
+write.csv2(Dichiarazioni_2023_Milano_cap, "Irpef_2022_MI.csv")
+
+Dichiarazioni_2023_Torino_cap = Dichiarazioni_2023_cap %>%
+  filter(Denominazione.Comune=="TORINO")
+
+write.csv2(Dichiarazioni_2023_Torino_cap, "Irpef_2022_To.csv")
+
+Dichiarazioni_2023_Napoli_cap = Dichiarazioni_2023_cap %>%
+  filter(Denominazione.Comune=="NAPOLI")
+
+write.csv2(Dichiarazioni_2023_Napoli_cap, "Irpef_2022_NA.csv")
+
+
+Dichiarazioni_2023_Firenze_cap = Dichiarazioni_2023_cap %>%
+  filter(Denominazione.Comune=="FIRENZE")
+
+write.csv2(Dichiarazioni_2023_Firenze_cap, "Irpef_2022_FI.csv")
+
+
+Dichiarazioni_2023_Bologna_cap = Dichiarazioni_2023_cap %>%
+  filter(Denominazione.Comune=="BOLOGNA")
+
+write.csv2(Dichiarazioni_2023_Bologna_cap, "Irpef_2022_BO.csv")
+
+
+write.csv(Dichiarazioni_2023_cap, "Irpef_2022_tot.csv")
+
+
+
+
 
 #Confronti 2019-2020
 
