@@ -649,7 +649,7 @@ Dichiarazioni_2023_Bologna_cap = Dichiarazioni_2023_cap %>%
 write.csv2(Dichiarazioni_2023_Bologna_cap, "Irpef_2022_BO.csv")
 
 
-write.csv(Dichiarazioni_2023_cap, "Irpef_2022_tot.csv")
+write.csv(Dichiarazioni_2023_cap, "Irpef_2022_cap.csv")
 
 
 
