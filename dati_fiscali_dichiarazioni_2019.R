@@ -37,11 +37,6 @@ Dichiarazioni_2023_Liguria <- Dichiarazioni_2023 %>%
 write.csv(Dichiarazioni_2023_Liguria, "Comuni_irpef_2023_Liguria.csv")
 
 
-
-
-
-
-
 #2022#
 
 Dichiarazioni_2022_ <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2021.csv", sep=";")
@@ -698,6 +693,14 @@ Dichiarazioni_2019 <- Dichiarazioni_2019 %>%
 Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>% 
   filter(Regione=="Liguria")
 
+#Affluenza europee 2024
+
+affluenza_euro_24 = read.csv("affluenza.csv")
+
+Dichiarazioni_2023_solo_reddito = Dichiarazioni_2023 %>%
+  select(Codice.Istat, Regione, Contribuenti, "Imponibile pro capite")
+
+affluenza_euro_24_redditi = left_join(affluenza_euro_24, Dichiarazioni_2023_solo_reddito, by=c("CODICE.ISTAT"="Codice.Istat"))
 
 #MAPPA REDDITI COMUNE 
 
