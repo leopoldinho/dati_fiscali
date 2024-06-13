@@ -695,12 +695,19 @@ Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>%
 
 #Affluenza europee 2024
 
-affluenza_euro_24 = read.csv("affluenza.csv")
+affluenza_euro_24 = read.csv("affluenza _new.csv")
 
 Dichiarazioni_2023_solo_reddito = Dichiarazioni_2023 %>%
   select(Codice.Istat, Regione, Contribuenti, "Imponibile pro capite")
 
 affluenza_euro_24_redditi = left_join(affluenza_euro_24, Dichiarazioni_2023_solo_reddito, by=c("CODICE.ISTAT"="Codice.Istat"))
+
+write.csv(affluenza_euro_24_redditi, "affluenza_euro_24_redditi.csv")
+
+affluenza_euro_24_redditi_1000 = affluenza_euro_24_redditi %>%
+  filter(Contribuenti > 1000 )
+
+write.csv(affluenza_euro_24_redditi_1000, "affluenza_euro_24_redditi-1000.csv")
 
 #MAPPA REDDITI COMUNE 
 
