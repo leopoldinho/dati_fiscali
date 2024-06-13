@@ -700,14 +700,27 @@ affluenza_euro_24 = read.csv("affluenza _new.csv")
 Dichiarazioni_2023_solo_reddito = Dichiarazioni_2023 %>%
   select(Codice.Istat, Regione, Contribuenti, "Imponibile pro capite")
 
-affluenza_euro_24_redditi = left_join(affluenza_euro_24, Dichiarazioni_2023_solo_reddito, by=c("CODICE.ISTAT"="Codice.Istat"))
+affluenza_euro_24_redditi = left_join(
+  affluenza_euro_24,
+  Dichiarazioni_2023_solo_reddito,
+  by = c("CODICE.ISTAT" = "Codice.Istat")
+) %>%
+  mutate(
+    diff_voti = vot_m - vot_f,
+    perc_m = vot_m / ele_m * 100,
+    perc_f = vot_f / ele_f * 100,
+    diff_per=perc_m-perc_f
+  )%>%
+  mutate_if(is.numeric, round, 2)
+
 
 write.csv(affluenza_euro_24_redditi, "affluenza_euro_24_redditi.csv")
 
 affluenza_euro_24_redditi_1000 = affluenza_euro_24_redditi %>%
-  filter(Contribuenti > 1000 )
+  filter(Contribuenti > 1000)
 
-write.csv(affluenza_euro_24_redditi_1000, "affluenza_euro_24_redditi-1000.csv")
+write.csv(affluenza_euro_24_redditi_1000,
+          "affluenza_euro_24_redditi-1000.csv")
 
 #MAPPA REDDITI COMUNE 
 
