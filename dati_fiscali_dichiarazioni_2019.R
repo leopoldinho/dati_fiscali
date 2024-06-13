@@ -709,7 +709,8 @@ affluenza_euro_24_redditi = left_join(
     diff_voti = vot_m - vot_f,
     perc_m = vot_m / ele_m * 100,
     perc_f = vot_f / ele_f * 100,
-    diff_per=perc_m-perc_f
+    diff_per=perc_m-perc_f,
+    perc_voto_f=vot_f/vot_t*100
   )%>%
   mutate_if(is.numeric, round, 2)
 
@@ -721,6 +722,28 @@ affluenza_euro_24_redditi_1000 = affluenza_euro_24_redditi %>%
 
 write.csv(affluenza_euro_24_redditi_1000,
           "affluenza_euro_24_redditi-1000.csv")
+
+
+#voti europee 2024
+
+risultati_euro_24_ = read.csv("Europee 2019 e 2024 - Euro 2024 mod.csv")
+
+risultati_euro_24_red = left_join(
+  risultati_euro_24_,
+  Dichiarazioni_2023_solo_reddito,
+  by = c("CODICE.ISTAT" = "Codice.Istat")
+)
+
+affluenza_euro_24_redditi_solo_donne = affluenza_euro_24_redditi %>%
+  select(desc, CODICE.ISTAT, perc_voto_f)
+
+risultati_euro_24_red_donne = left_join(risultati_euro_24_red,
+                                        affluenza_euro_24_redditi_solo_donne,
+                                        by = "CODICE.ISTAT")
+
+write.csv(risultati_euro_24_red_donne,
+          "risultati_euro_24_red_donne.csv")
+
 
 #MAPPA REDDITI COMUNE 
 
