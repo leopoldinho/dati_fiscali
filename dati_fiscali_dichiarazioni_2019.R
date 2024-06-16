@@ -745,6 +745,9 @@ write.csv(risultati_euro_24_red_donne,
           "risultati_euro_24_red_donne.csv")
 
 
+
+
+
 #MAPPA REDDITI COMUNE 
 
 #Scarico dati geografici e unisco a dati redditi
