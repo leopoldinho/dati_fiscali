@@ -923,3 +923,6 @@ pal <- hcl.colors(6, "Inferno", rev = TRUE, alpha = 0.7)
 #https://r-graph-gallery.com/custom-fonts-in-R-and-ggplot2.html
 #https://r-charts.com/spatial/choropleth-map-ggplot2/
 
+
+
+prova_comuni = read.csv2("STRASA_2024_it_Comuni.csv", skip = 1)
