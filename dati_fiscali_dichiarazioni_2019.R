@@ -577,8 +577,8 @@ write.csv(Dichiarazioni_2022_cap, "Irpef_2021_tot.csv")
 # Cap 2023
 
 Dichiarazioni_2023_cap_ <-
-  read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2022.csv",
-            sep = ",")
+  read.csv("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2022.csv",
+            sep = ";")
 
 Dichiarazioni_2023_cap <- Dichiarazioni_2023_cap_ %>%
   mutate(
