@@ -603,14 +603,16 @@ Dichiarazioni_2023_cap <- Dichiarazioni_2023_cap_ %>%
 
 
 Dichiarazioni_2023_Genova_cap = Dichiarazioni_2023_cap %>%
+  mutate(Paese="Italy")%>%
   filter(Denominazione.Comune=="GENOVA")
 
-write.csv2(Dichiarazioni_2023_Genova_cap, "Irpef_2022_GE.csv")
+write.csv(Dichiarazioni_2023_Genova_cap, "Irpef_2022_GE.csv")
 
-Dichiarazioni_2023_Spezia_cap = Dichiarazioni_2023_cap %>%
+Dichiarazioni_2023_Spezia_cap = Dichiarazioni_2023_cap%>%
+  mutate(Paese="Italy")%>%
   filter(Denominazione.Comune=="LA SPEZIA")
 
-write.csv2(Dichiarazioni_2023_Spezia_cap, "Irpef_2022_SP.csv")
+write.csv(Dichiarazioni_2023_Spezia_cap, "Irpef_2022_SP.csv")
 
 
 Dichiarazioni_2023_Roma_cap = Dichiarazioni_2023_cap %>%
