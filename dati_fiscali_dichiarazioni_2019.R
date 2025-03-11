@@ -28,6 +28,10 @@ Dichiarazioni_2023 <- Dichiarazioni_2023_ %>%
 
 write.csv2(Dichiarazioni_2023, "Comuni_irpef_2023_b.csv")
 
+dichiarazioni_2023_lomb = Dichiarazioni_2023 %>%
+  filter(Regione=="Lombardia")
+
+write.csv(dichiarazioni_2023_lomb, "dichiarazioni_2023_lomb.csv")
 
 summary_dichiarazioni_2023 = Dichiarazioni_2023_ %>%
   group_by(Anno.di.imposta) %>%
