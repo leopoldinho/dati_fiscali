@@ -1,18 +1,16 @@
 #Libraries
-library(devtools) 
+
 library(tidyverse)
 library(googlesheets4)
-library(sf)
-library(viridis)
-library(showtext)
+
 
 dir.create("dati_fiscali")
-setwd("dati_fiscali")
+setwd("C:/Users/Raffo/Documents/dati_fiscali")
 
 
 #2024#
 
-Dichiarazioni_2024_ <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2022.csv", sep=";")
+Dichiarazioni_2024_ <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2023.csv", sep=";")
 
 Dichiarazioni_2024 <- Dichiarazioni_2024_ %>%
   mutate(reddito_medio_dichiarato=
@@ -27,7 +25,7 @@ Dichiarazioni_2024 <- Dichiarazioni_2024_ %>%
          "Imponibile pro capite"=reddito_medio_dichiarato,Reddito_complessivo_ricchi=Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro,
          Reddito.complessivo.oltre.120000.euro...Frequenza,Perc_reddito_scaglione_max,scaglione_redditi_bassi,Perc_redditi_bassi,contribuenti.bassi,Perc_contr_bassi)
 
-write.csv2(Dichiarazioni_2024, "Comuni_irpef_2024_b.csv")
+write.csv(Dichiarazioni_2024, "Comuni_irpef_2024_b.csv")
 
 dichiarazioni_2024_lomb = Dichiarazioni_2024 %>%
   filter(Regione=="Lombardia")
@@ -47,7 +45,7 @@ write.csv(Dichiarazioni_2024_Liguria, "Comuni_irpef_2024_Liguria.csv")
 # Cap 2024
 
 Dichiarazioni_2024_cap_ <-
-  read.csv("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2022.csv",
+  read.csv("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2023.csv",
            sep = ";")
 
 Dichiarazioni_2024_cap <- Dichiarazioni_2024_cap_ %>%
