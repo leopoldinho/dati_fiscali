@@ -45,24 +45,17 @@ Dichiarazioni_2024_cap_ <-
            sep = ";")
 
 Dichiarazioni_2024_cap <- Dichiarazioni_2024_cap_ %>%
-  mutate(
-    reddito_medio_dichiarato =
-      Reddito.imponibile...Ammontare.in.euro / Numero.contribuenti,
-    Perc_cont_scaglione_alto = Reddito.complessivo.oltre.120000.euro...Frequenza /
-      Numero.contribuenti * 100,
-    red_medio_cont_scaglione_alto = Reddito.complessivo.oltre.120000.euro...Ammontare.in.euro /
-      Reddito.complessivo.oltre.120000.euro...Frequenza
-  ) %>%
+  mutate(reddito_medio_dichiarato=
+           Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti,
+         reddito_medio_frequenza=Reddito.imponibile...Ammontare.in.euro/Reddito.imponibile...Frequenza) %>%
   mutate_if(is.numeric, round, 2) %>%
   select(
     Denominazione.Comune,
     CAP,
     Contribuenti = Numero.contribuenti,
-    Imponibile = Reddito.imponibile...Ammontare.in.euro,
-    Contribuenti_scaglione_alto = Reddito.complessivo.oltre.120000.euro...Frequenza,
-    reddito_medio_dichiarato,
-    Perc_cont_scaglione_alto,
-    red_medio_cont_scaglione_alto
+    Dichiaranti=Reddito.imponibile...Frequenza,
+    Reddito=reddito_medio_dichiarato,
+    "Reddito medio"=reddito_medio_frequenza
   )
 
 
@@ -114,9 +107,17 @@ write.csv2(Dichiarazioni_2024_Firenze_cap, "Irpef_2023_FI.csv")
 
 
 Dichiarazioni_2024_Bologna_cap = Dichiarazioni_2024_cap %>%
-  filter(Denominazione.Comune=="BOLOGNA")
+  filter(Denominazione.Comune=="BOLOGNA")%>%
+  mutate(Paese="Italy")
 
 write.csv2(Dichiarazioni_2024_Bologna_cap, "Irpef_2023_BO.csv")
+
+
+Dichiarazioni_2024_Palermo_cap = Dichiarazioni_2024_cap %>%
+  filter(Denominazione.Comune=="PALERMO")%>%
+  mutate(Paese="Italy")
+
+write.csv2(Dichiarazioni_2024_Palermo_cap, "Irpef_2023_PA.csv")
 
 
 write.csv(Dichiarazioni_2024_cap, "Irpef_2023_cap.csv")
