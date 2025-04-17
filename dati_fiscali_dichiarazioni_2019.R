@@ -30,7 +30,7 @@ write.csv(dichiarazioni_2024_lomb, "dichiarazioni_2024_lomb.csv")
 
 summary_dichiarazioni_2024 = Dichiarazioni_2024_ %>%
   group_by(Anno.di.imposta) %>%
-  summarise(Reddito_medio=sum(Reddito.imponibile...Ammontare.in.euro)/ sum(Numero.contribuenti))
+  summarise(Reddito_medio=sum(Reddito.imponibile...Ammontare.in.euro)/ sum(Reddito.imponibile...Frequenza))
 
 Dichiarazioni_2024_Liguria <- Dichiarazioni_2024 %>% 
   filter(Regione=="Liguria")
