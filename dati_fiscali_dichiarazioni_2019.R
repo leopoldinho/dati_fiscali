@@ -800,5 +800,8 @@ write.csv(classi_reddito_italia, "classi_reddito_italia.csv")
 
 write.csv(Classi_reddito_2024_Liguria_Summary, "Classi_reddito_2024_Liguria_Summary.csv" )
 
+classi_reddito_italia_sum = Classi_reddito_2024_ %>%
+  summarise(across(where(is.numeric), ~sum(.x, na.rm = TRUE)))
+
 
 Classi_reddito_eta_ = read.csv2("cla_anno_calcolo_irpef_2024.csv", sep=";")
