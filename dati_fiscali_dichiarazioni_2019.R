@@ -742,3 +742,63 @@ Dichiarazioni_2019 <- Dichiarazioni_2019 %>%
 Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>% 
   filter(Regione=="Liguria")
 
+#Classi di reddito
+
+exclude_vars <- c("Classi.di.reddito.complessivo.in.euro", "Regione") # Specifica le variabili da escludere
+
+Classi_reddito_2024_ <- read.csv2("REG_calcolo_irpef_2024.csv", sep=";") 
+
+
+Classi_reddito_2024_ = Classi_reddito_2024_ %>%
+  mutate(across(
+    .cols = -all_of(exclude_vars),
+    .fns = ~ as.numeric(
+      gsub("\\.", "", .)  # tolgo i separatori di migliaia "."
+        )
+  ))
+
+Classi_reddito_2024_ = Classi_reddito_2024_ %>%
+  mutate(across(everything(), ~replace_na(., 0)))
+
+Classi_reddito_2024_Liguria = Classi_reddito_2024_ %>%
+  filter(Regione=="Liguria")
+
+Classi_reddito_2024_Liguria_Summary = Classi_reddito_2024_Liguria %>%
+  group_by(Regione) %>%
+  summarise(
+    sum(Numero.contribuenti),
+    sum(Reddito.imponibile...Frequenza),
+    sum(Reddito.complessivo...Frequenza),
+    sum(Reddito.complessivo...Ammontare.in.euro),
+    sum(Reddito.imponibile...Ammontare.in.euro),
+    sum(Imposta.netta...Ammontare.in.euro),
+    sum(Imposta.netta...Frequenza),
+    sum(Differenza...Ammontare.in.euro),
+    sum(Reddito.complessivo.al.netto.della.cedolare.secca...Ammontare.in.euro),
+    sum(Irpef.a.debito...Ammontare.in.euro),
+    sum(Imposta.lorda...Ammontare.in.euro)
+  )
+
+
+
+classi_reddito_italia = Classi_reddito_2024_ %>%
+  group_by(Classi.di.reddito.complessivo.in.euro) %>%
+  summarise(
+    sum(Numero.contribuenti),
+    sum(Reddito.imponibile...Frequenza),
+    sum(Reddito.complessivo...Frequenza),
+    sum(Reddito.complessivo...Ammontare.in.euro),
+    sum(Reddito.imponibile...Ammontare.in.euro),
+    sum(Imposta.netta...Ammontare.in.euro),
+    sum(Imposta.netta...Frequenza),
+    sum(Differenza...Ammontare.in.euro),
+    sum(Reddito.complessivo.al.netto.della.cedolare.secca...Ammontare.in.euro),
+    sum(Irpef.a.debito...Ammontare.in.euro),
+    sum(Imposta.lorda...Ammontare.in.euro)
+  )
+write.csv(classi_reddito_italia, "classi_reddito_italia.csv")
+
+write.csv(Classi_reddito_2024_Liguria_Summary, "Classi_reddito_2024_Liguria_Summary.csv" )
+
+
+Classi_reddito_eta_ = read.csv2("cla_anno_calcolo_irpef_2024.csv", sep=";")
