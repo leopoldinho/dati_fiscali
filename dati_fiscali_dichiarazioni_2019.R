@@ -743,12 +743,8 @@ Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>%
   filter(Regione=="Liguria")
 
 #Classi di reddito
-
 exclude_vars <- c("Classi.di.reddito.complessivo.in.euro", "Regione") # Specifica le variabili da escludere
-
 Classi_reddito_2024_ <- read.csv2("REG_calcolo_irpef_2024.csv", sep=";") 
-
-
 Classi_reddito_2024_ = Classi_reddito_2024_ %>%
   mutate(across(
     .cols = -all_of(exclude_vars),
@@ -760,6 +756,53 @@ Classi_reddito_2024_ = Classi_reddito_2024_ %>%
 Classi_reddito_2024_ = Classi_reddito_2024_ %>%
   mutate(across(everything(), ~replace_na(., 0)))
 
+
+#TIR E ADDIZIONALE
+Tir_2024_ <- read.csv2("Trattamento_PFTOT2024tab_02_02_.csv", sep = ";") %>%
+  mutate(
+    Trattamento.spettante...Ammontare = Trattamento.spettante...Ammontare *
+      1000,
+    Addizionale.regionale.dovuta...Ammontare = Addizionale.regionale.dovuta...Ammontare *
+      1000,
+    Addizionale.comunale.dovuta...Ammontare = Addizionale.comunale.dovuta...Ammontare *
+      1000
+  ) %>%
+  select(
+    Classi.di.reddito.complessivo.in.euro,
+    Trattamento.spettante...Ammontare,
+    Addizionale.regionale.dovuta...Ammontare,
+    Addizionale.comunale.dovuta...Ammontare
+  )
+
+
+#Elaborazione nazionale
+
+Elaborazione_2024 = Classi_reddito_2024_ %>%
+  select(
+    Classi.di.reddito.complessivo.in.euro,
+    Imposta.netta...Frequenza,
+    Imposta.netta...Ammontare.in.euro
+  ) %>%
+  group_by(Classi.di.reddito.complessivo.in.euro) %>%
+  summarise(
+    Imposta.netta = sum(Imposta.netta...Ammontare.in.euro),
+    Dichiaranti = sum(Imposta.netta...Frequenza)
+  ) %>%
+  ungroup() %>%
+  left_join(Tir_2024_, by = "Classi.di.reddito.complessivo.in.euro") %>%
+  mutate(
+    Irpef = Imposta.netta - Trattamento.spettante...Ammontare + Addizionale.regionale.dovuta...Ammontare +
+      Addizionale.comunale.dovuta...Ammontare
+  )%>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(where(is.character), ~"Total")))
+  
+write.csv(Elaborazione_2024, "Elaborazione_2024.csv")
+
+
+
+#elaborazioni
 Classi_reddito_2024_Liguria = Classi_reddito_2024_ %>%
   filter(Regione=="Liguria")
 
