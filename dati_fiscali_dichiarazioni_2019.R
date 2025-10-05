@@ -37,6 +37,10 @@ Dichiarazioni_2024_Liguria <- Dichiarazioni_2024 %>%
 
 write.csv(Dichiarazioni_2024_Liguria, "Comuni_irpef_2024_Liguria.csv")
 
+Dichiarazioni_2024_Liguria_Comuni_scaglioni = Dichiarazioni_2024_ %>% 
+  filter(Regione=="Liguria")
+
+write.csv(Dichiarazioni_2024_Liguria_Comuni_scaglioni, "Dichiarazioni_2024_Liguria_Comuni_scaglioni.csv")
 
 # Cap 2024
 
@@ -840,6 +844,7 @@ classi_reddito_italia = Classi_reddito_2024_ %>%
     sum(Imposta.lorda...Ammontare.in.euro)
   )
 write.csv(classi_reddito_italia, "classi_reddito_italia.csv")
+write.csv(Classi_reddito_2024_Liguria, "Classi_reddito_2024_Liguria.csv")
 
 write.csv(Classi_reddito_2024_Liguria_Summary, "Classi_reddito_2024_Liguria_Summary.csv" )
 
