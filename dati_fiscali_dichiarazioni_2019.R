@@ -32,6 +32,10 @@ summary_dichiarazioni_2024 = Dichiarazioni_2024_ %>%
   group_by(Anno.di.imposta) %>%
   summarise(Reddito_medio=sum(Reddito.imponibile...Ammontare.in.euro)/ sum(Reddito.imponibile...Frequenza))
 
+Dichiarazioni_2024_Liguria_tot <- Dichiarazioni_2024_ %>% 
+  filter(Regione=="Liguria")
+
+
 Dichiarazioni_2024_Liguria <- Dichiarazioni_2024 %>% 
   filter(Regione=="Liguria")
 
@@ -748,7 +752,9 @@ Dichiarazioni_2019_Liguria <- Dichiarazioni_2019 %>%
 
 #Classi di reddito
 exclude_vars <- c("Classi.di.reddito.complessivo.in.euro", "Regione") # Specifica le variabili da escludere
+
 Classi_reddito_2024_ <- read.csv2("REG_calcolo_irpef_2024.csv", sep=";") 
+
 Classi_reddito_2024_ = Classi_reddito_2024_ %>%
   mutate(across(
     .cols = -all_of(exclude_vars),
@@ -760,9 +766,56 @@ Classi_reddito_2024_ = Classi_reddito_2024_ %>%
 Classi_reddito_2024_ = Classi_reddito_2024_ %>%
   mutate(across(everything(), ~replace_na(., 0)))
 
+Classi_reddito_2024_Liguria = Classi_reddito_2024_ %>%
+  filter(Regione == "Liguria") %>%
+  select(
+    Classi.di.reddito.complessivo.in.euro,
+    Numero.contribuenti,
+    Reddito.imponibile...Frequenza,
+    Reddito.imponibile...Ammontare.in.euro,
+    Imposta.netta...Frequenza,
+    Imposta.netta...Ammontare.in.euro
+  )
 
-#TIR E ADDIZIONALE
-Tir_2024_ <- read.csv2("Trattamento_PFTOT2024tab_02_02_.csv", sep = ";") %>%
+#calcolo tipo reddito 
+
+Tipo_reddito_2024_ <- read.csv2("REG_tipo_reddito_2024.csv", sep=";") 
+
+Tipo_reddito_2024_ = Tipo_reddito_2024_ %>%
+  mutate(across(
+  .cols = -all_of(exclude_vars),
+  .fns = ~ as.numeric(
+    gsub("\\.", "", .)  # tolgo i separatori di migliaia "."
+  )
+))
+
+Tipo_reddito_2024_ = Tipo_reddito_2024_ %>%
+  mutate(across(everything(), ~replace_na(., 0)))
+
+Tipo_reddito_2024_Liguria = Tipo_reddito_2024_ %>%
+  filter(Regione == "Liguria") %>%
+  select(
+    Classi.di.reddito.complessivo.in.euro,
+    Reddito.da.fabbricati...Frequenza,
+    Reddito.da.fabbricati...Ammontare.in.euro,
+    Reddito.da.pensione...Frequenza,
+    Reddito.da.pensione...Ammontare.in.euro,
+    Reddito.da.lavoro.dipendente.e.assimilati...Frequenza,
+    Reddito.da.lavoro.dipendente.e.assimilati...Ammontare.in.euro,
+    Reddito.da.lavoro.autonomo...Frequenza,
+    Reddito.da.lavoro.autonomo...Ammontare.in.euro
+  )
+
+Redditi_Tasse_liguria = Classi_reddito_2024_Liguria %>%
+    left_join(Tipo_reddito_2024_Liguria, by = "Classi.di.reddito.complessivo.in.euro")%>%
+  bind_rows(summarise(.,
+                                                                                                          across(where(is.numeric), sum),
+                                                                                                          across(where(is.character), ~"Totale")))
+
+write.csv(Redditi_Tasse_liguria, "Redditi_Tasse_liguria.csv")
+
+#TIR E ADDIZIONALE (da rivedere)
+Tir_2024_ <- read.csv("addizionale_PFTOT2024tab_02_02_.csv", sep=";") %>%
   mutate(
     Trattamento.spettante...Ammontare = Trattamento.spettante...Ammontare *
       1000,
@@ -800,13 +853,12 @@ Elaborazione_2024 = Classi_reddito_2024_ %>%
   )%>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
-                      across(where(is.character), ~"Total")))
+                      across(where(is.character), ~"Totale")))
   
 write.csv(Elaborazione_2024, "Elaborazione_2024.csv")
 
 
-
-#elaborazioni
+#elaborazioni LIGURIA
 Classi_reddito_2024_Liguria = Classi_reddito_2024_ %>%
   filter(Regione=="Liguria")
 
