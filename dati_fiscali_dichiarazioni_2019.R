@@ -807,12 +807,81 @@ Tipo_reddito_2024_Liguria = Tipo_reddito_2024_ %>%
   )
 
 Redditi_Tasse_liguria = Classi_reddito_2024_Liguria %>%
-    left_join(Tipo_reddito_2024_Liguria, by = "Classi.di.reddito.complessivo.in.euro")%>%
-  bind_rows(summarise(.,
-                                                                                                          across(where(is.numeric), sum),
-                                                                                                          across(where(is.character), ~"Totale")))
+  left_join(Tipo_reddito_2024_Liguria, by = "Classi.di.reddito.complessivo.in.euro") %>%
+  bind_rows(summarise(., across(where(is.numeric), sum), across(where(is.character), ~
+                                                                  "Totale")))
+
+Redditi_Tasse_liguria_ <- Redditi_Tasse_liguria %>%
+  mutate(Reddito = case_when(
+    row_number() %in% 1:3 ~ "Zero o minore di zero",
+    row_number() %in% 1:13 ~ "Fino a 7.500",
+    row_number() %in% 14:16 ~ "Da 7.500 a 15.000",
+    row_number() %in% 17:17 ~ "Da 15.000 a 20.000",
+    row_number() %in% 18:19 ~ "Da 20.000 a 29.000",
+    row_number() %in% 20:20 ~ "Da 29.000 a 35.000",
+    row_number() %in% 21:23 ~ "Da 35.000 a 55.000",
+    row_number() %in% 24:29 ~ "Da 55.000 a 100.000",
+    row_number() %in% 30:32 ~ "Da 100.000 a 200.000",
+    row_number() %in% 30:32 ~ "Da 100.000 a 200.000",
+    row_number() %in% 33:33 ~ "Da 200.000 a 300.000",
+    row_number() %in% 34:34 ~ "Da 200.000 a 300.000",
+    row_number() %in% 35:35 ~ "TOTALE",
+    TRUE ~ NA_character_
+  )) %>%
+  group_by(Reddito) %>%
+  summarise(across(where(is.numeric), sum, na.rm = TRUE), .groups = "drop") %>%
+  filter(!is.na(Reddito))
+
+
+
+Redditi_Tasse_liguria_def <- bind_rows(Redditi_Tasse_liguria_) %>%
+  mutate(Reddito = factor(
+    Reddito,
+    levels = c(
+      "Zero o minore di zero",
+      "Fino a 7.500",
+      "Da 7.500 a 15.000",
+      "Da 15.000 a 20.000",
+      "Da 20.000 a 29.000",
+      "Da 29.000 a 35.000",
+      "Da 35.000 a 55.000",
+      "Da 55.000 a 100.000",
+      "Da 100.000 a 200.000",
+      "Da 200.000 a 300.000",
+      "TOTALE"
+    )
+  )) %>%
+  arrange(Reddito) %>%
+  rename(Contribuenti = Numero.contribuenti,
+         Dichiaranti = Reddito.imponibile...Frequenza,
+         Versanti=Imposta.netta...Frequenza,
+         Imponibile = Reddito.imponibile...Ammontare.in.euro,
+         Imposta=Imposta.netta...Ammontare.in.euro
+         )%>%
+  mutate("Imponibile medio x contribuente"=Imponibile/Contribuenti,
+         "Imposta media per contribuente"=Imposta/Contribuenti,
+         "Perc contribuenti sul totale"=Contribuenti/1199819*100)%>%
+  mutate_if(is.numeric, round, 2)%>%
+  relocate(Reddito, 
+           Contribuenti,
+           "Perc contribuenti sul totale",
+           Dichiaranti,
+           Versanti,
+           Imponibile,
+           Imposta,
+           "Imponibile medio x contribuente",
+           "Imposta media per contribuente")
+
+#aggiungo le percentuali
+
+Redditi_Tasse_liguria_def  <- Redditi_Tasse_liguria_def  %>%
+  mutate(across(c(),
+                ~ .x / df_final %>% filter(Reddito == "TOTALE") %>% pull(cur_column()) * 100,
+                .names = "{.col} perc"))
 
 write.csv(Redditi_Tasse_liguria, "Redditi_Tasse_liguria.csv")
+
+
 
 #TIR E ADDIZIONALE (da rivedere)
 Tir_2024_ <- read.csv("addizionale_PFTOT2024tab_02_02_.csv", sep=";") %>%
