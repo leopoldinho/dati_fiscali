@@ -860,17 +860,20 @@ Redditi_Tasse_liguria_def <- bind_rows(Redditi_Tasse_liguria_) %>%
          )%>%
   mutate("Imponibile medio x contribuente"=Imponibile/Contribuenti,
          "Imposta media per contribuente"=Imposta/Contribuenti,
-         "Perc contribuenti sul totale"=Contribuenti/1199819*100)%>%
+         "Perc contribuenti sul totale"=Contribuenti/1199819*100,
+         "Perc imposta"= Imposta/5572314434*100
+)%>%
   mutate_if(is.numeric, round, 2)%>%
   relocate(Reddito, 
            Contribuenti,
-           "Perc contribuenti sul totale",
            Dichiaranti,
            Versanti,
            Imponibile,
            Imposta,
            "Imponibile medio x contribuente",
-           "Imposta media per contribuente")
+           "Imposta media per contribuente",
+           "Perc contribuenti sul totale",
+           "Perc imposta")
 
 write.csv(Redditi_Tasse_liguria_def , "Redditi_Tasse_liguria_def .csv")
 
