@@ -872,12 +872,7 @@ Redditi_Tasse_liguria_def <- bind_rows(Redditi_Tasse_liguria_) %>%
            "Imponibile medio x contribuente",
            "Imposta media per contribuente")
 
-#aggiungo le percentuali
-
-Redditi_Tasse_liguria_def  <- Redditi_Tasse_liguria_def  %>%
-  mutate(across(c(),
-                ~ .x / df_final %>% filter(Reddito == "TOTALE") %>% pull(cur_column()) * 100,
-                .names = "{.col} perc"))
+write.csv(Redditi_Tasse_liguria_def , "Redditi_Tasse_liguria_def .csv")
 
 write.csv(Redditi_Tasse_liguria, "Redditi_Tasse_liguria.csv")
 
