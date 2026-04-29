@@ -4,24 +4,25 @@ library(tidyverse)
 library(googlesheets4)
 
 
-dir.create("dati_fiscali")
+#dir.create("dati_fiscali")
 setwd("C:/Users/Raffo/Documents/dati_fiscali")
 
 
-#2024#
+#2025#
 
-Dichiarazioni_2024_ <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2023.csv", sep=";")
+Dichiarazioni_2025_ <- read.csv2("Redditi_e_principali_variabili_IRPEF_su_base_comunale_CSV_2024.csv", sep=";")
 
-Dichiarazioni_2024 <- Dichiarazioni_2024_ %>%
+Dichiarazioni_2025 <- Dichiarazioni_2025_ %>%
   mutate(reddito_medio_dichiarato=
            Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti,
          reddito_medio_frequenza=Reddito.imponibile...Ammontare.in.euro/Reddito.imponibile...Frequenza) %>%
   mutate_if(is.numeric, round, 2) %>%
   select(Anno.di.imposta, Codice.Istat=Codice.Istat.Comune,Regione,Sigla.Provincia,
          Denominazione.Comune, Contribuenti=Numero.contribuenti,Dichiaranti=Reddito.imponibile...Frequenza,
-         Reddito=reddito_medio_dichiarato, "Reddito medio"=reddito_medio_frequenza)
+         Reddito=reddito_medio_dichiarato, "Reddito medio"=reddito_medio_frequenza)%>%
+    arrange(desc(Contribuenti))
 
-write.csv(Dichiarazioni_2024, "Comuni_irpef_2024_b.csv")
+write.csv(Dichiarazioni_2025, "Comuni_irpef_2025.csv")
 
 dichiarazioni_2024_lomb = Dichiarazioni_2024 %>%
   filter(Regione=="Lombardia")
@@ -32,14 +33,14 @@ summary_dichiarazioni_2024 = Dichiarazioni_2024_ %>%
   group_by(Anno.di.imposta) %>%
   summarise(Reddito_medio=sum(Reddito.imponibile...Ammontare.in.euro)/ sum(Reddito.imponibile...Frequenza))
 
-Dichiarazioni_2024_Liguria_tot <- Dichiarazioni_2024_ %>% 
+Dichiarazioni_2025_Liguria_tot <- Dichiarazioni_2025_ %>% 
   filter(Regione=="Liguria")
 
 
-Dichiarazioni_2024_Liguria <- Dichiarazioni_2024 %>% 
+Dichiarazioni_2025_Liguria <- Dichiarazioni_2025 %>% 
   filter(Regione=="Liguria")
 
-write.csv(Dichiarazioni_2024_Liguria, "Comuni_irpef_2024_Liguria.csv")
+write.csv(Dichiarazioni_2025_Liguria, "Comuni_irpef_2025_Liguria.csv")
 
 Dichiarazioni_2024_Liguria_Comuni_scaglioni = Dichiarazioni_2024_ %>% 
   filter(Regione=="Liguria")
@@ -48,11 +49,11 @@ write.csv(Dichiarazioni_2024_Liguria_Comuni_scaglioni, "Dichiarazioni_2024_Ligur
 
 # Cap 2024
 
-Dichiarazioni_2024_cap_ <-
-  read.csv("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2023.csv",
+Dichiarazioni_2025_cap_ <-
+  read.csv("Redditi_e_principali_variabili_IRPEF_su_base_subcomunale_CSV_2024.csv",
            sep = ";")
 
-Dichiarazioni_2024_cap <- Dichiarazioni_2024_cap_ %>%
+Dichiarazioni_2025_cap <- Dichiarazioni_2025_cap_ %>%
   mutate(reddito_medio_dichiarato=
            Reddito.imponibile...Ammontare.in.euro/Numero.contribuenti,
          reddito_medio_frequenza=Reddito.imponibile...Ammontare.in.euro/Reddito.imponibile...Frequenza) %>%
@@ -67,68 +68,68 @@ Dichiarazioni_2024_cap <- Dichiarazioni_2024_cap_ %>%
   )
 
 
-Dichiarazioni_2024_Genova_cap = Dichiarazioni_2024_cap %>%
+Dichiarazioni_2025_Genova_cap = Dichiarazioni_2025_cap %>%
   mutate(Paese="Italy")%>%
   filter(Denominazione.Comune=="GENOVA")%>%
   mutate(Paese="Italy")
 
-write.csv(Dichiarazioni_2024_Genova_cap, "Irpef_2023_GE.csv")
+write.csv(Dichiarazioni_2025_Genova_cap, "Irpef_2024_GE.csv")
 
-Dichiarazioni_2024_Spezia_cap = Dichiarazioni_2024_cap%>%
+Dichiarazioni_2025_Spezia_cap = Dichiarazioni_2025_cap%>%
   mutate(Paese="Italy")%>%
   filter(Denominazione.Comune=="LA SPEZIA")%>%
   mutate(Paese="Italy")
 
-write.csv(Dichiarazioni_2024_Spezia_cap, "Irpef_2023_SP.csv")
+write.csv(Dichiarazioni_2025_Spezia_cap, "Irpef_2024_SP.csv")
 
 
-Dichiarazioni_2024_Roma_cap = Dichiarazioni_2024_cap %>%
+Dichiarazioni_2025_Roma_cap = Dichiarazioni_2025_cap %>%
   filter(Denominazione.Comune=="ROMA")%>%
   mutate(Paese="Italy")
 
-write.csv2(Dichiarazioni_2024_Roma_cap, "Irpef_2023_RM.csv")
+write.csv2(Dichiarazioni_2025_Roma_cap, "Irpef_2024_RM.csv")
 
-Dichiarazioni_2024_Milano_cap = Dichiarazioni_2024_cap %>%
+Dichiarazioni_2025_Milano_cap = Dichiarazioni_2025_cap %>%
   filter(Denominazione.Comune=="MILANO")%>%
   mutate(Paese="Italy")
 
-write.csv2(Dichiarazioni_2024_Milano_cap, "Irpef_2023_MI.csv")
+write.csv2(Dichiarazioni_2025_Milano_cap, "Irpef_2024_MI.csv")
 
-Dichiarazioni_2024_Torino_cap = Dichiarazioni_2024_cap %>%
+Dichiarazioni_2025_Torino_cap = Dichiarazioni_2025_cap %>%
   filter(Denominazione.Comune=="TORINO")%>%
   mutate(Paese="Italy")
 
-write.csv2(Dichiarazioni_2024_Torino_cap, "Irpef_2023_To.csv")
+write.csv2(Dichiarazioni_2025_Torino_cap, "Irpef_2024_To.csv")
 
-Dichiarazioni_2024_Napoli_cap = Dichiarazioni_2024_cap %>%
+Dichiarazioni_2025_Napoli_cap = Dichiarazioni_2025_cap %>%
   filter(Denominazione.Comune=="NAPOLI")%>%
   mutate(Paese="Italy")
 
-write.csv2(Dichiarazioni_2024_Napoli_cap, "Irpef_2023_NA.csv")
+write.csv2(Dichiarazioni_2025_Napoli_cap, "Irpef_2024_NA.csv")
 
 
-Dichiarazioni_2024_Firenze_cap = Dichiarazioni_2024_cap %>%
+Dichiarazioni_2025_Firenze_cap = Dichiarazioni_2025_cap %>%
   filter(Denominazione.Comune=="FIRENZE")%>%
   mutate(Paese="Italy")
 
-write.csv2(Dichiarazioni_2024_Firenze_cap, "Irpef_2023_FI.csv")
+write.csv2(Dichiarazioni_2025_Firenze_cap, "Irpef_2024_FI.csv")
 
 
-Dichiarazioni_2024_Bologna_cap = Dichiarazioni_2024_cap %>%
+Dichiarazioni_2025_Bologna_cap = Dichiarazioni_2025_cap %>%
   filter(Denominazione.Comune=="BOLOGNA")%>%
   mutate(Paese="Italy")
 
-write.csv2(Dichiarazioni_2024_Bologna_cap, "Irpef_2023_BO.csv")
+write.csv2(Dichiarazioni_2025_Bologna_cap, "Irpef_2024_BO.csv")
 
 
-Dichiarazioni_2024_Palermo_cap = Dichiarazioni_2024_cap %>%
+Dichiarazioni_2025_Palermo_cap = Dichiarazioni_2025_cap %>%
   filter(Denominazione.Comune=="PALERMO")%>%
   mutate(Paese="Italy")
 
-write.csv2(Dichiarazioni_2024_Palermo_cap, "Irpef_2023_PA.csv")
+write.csv2(Dichiarazioni_2025_Palermo_cap, "Irpef_2024_PA.csv")
 
 
-write.csv(Dichiarazioni_2024_cap, "Irpef_2023_cap.csv")
+write.csv(Dichiarazioni_2025_cap, "Irpef_2024_cap.csv")
 
 
 
