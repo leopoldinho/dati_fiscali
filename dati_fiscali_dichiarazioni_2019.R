@@ -24,6 +24,22 @@ Dichiarazioni_2025 <- Dichiarazioni_2025_ %>%
 
 write.csv(Dichiarazioni_2025, "Comuni_irpef_2025.csv")
 
+#REGIONI
+
+dichiarazioni_2025_regioni <- Dichiarazioni_2025_ %>% group_by(Regione)%>%
+  summarise(
+    # across() seleziona le colonne; where(is.numeric) garantisce che 
+    # la somma venga applicata solo ai numeri, evitando errori.
+    across(where(is.numeric), ~sum(.x, na.rm = TRUE))
+  )%>%
+  select(-Anno.di.imposta, -Codice.Istat.Comune, -Codice.Istat.Regione)
+  
+dichiarazioni_2025_regioni_stat= dichiarazioni_2025_regioni %>%
+  mutate(pensionati=Reddito.da.pensione...Frequenza/Numero.contribuenti)%>%
+  mutate(addizionale=Addizionale.regionale.dovuta...Ammontare.in.euro/Addizionale.regionale.dovuta...Frequenza)%>%
+  mutate(fabbricati=Reddito.da.fabbricati...Ammontare.in.euro/Reddito.da.fabbricati...Frequenza)
+
+
 dichiarazioni_2024_lomb = Dichiarazioni_2024 %>%
   filter(Regione=="Lombardia")
 
@@ -35,7 +51,6 @@ summary_dichiarazioni_2024 = Dichiarazioni_2024_ %>%
 
 Dichiarazioni_2025_Liguria_tot <- Dichiarazioni_2025_ %>% 
   filter(Regione=="Liguria")
-
 
 Dichiarazioni_2025_Liguria <- Dichiarazioni_2025 %>% 
   filter(Regione=="Liguria")
