@@ -17,31 +17,8 @@ Dichiarazioni_2025 <- Dichiarazioni_2025_ %>%
     reddito_medio_dichiarato =
       Reddito.imponibile...Ammontare.in.euro / Numero.contribuenti,
     reddito_medio_frequenza = Reddito.imponibile...Ammontare.in.euro /
-      Reddito.imponibile...Frequenza
-  ) %>%
-  mutate_if(is.numeric, round, 2) %>%
-  select(
-    Anno.di.imposta,
-    Codice.Istat = Codice.Istat.Comune,
-    Regione,
-    Sigla.Provincia,
-    Denominazione.Comune,
-    Contribuenti = Numero.contribuenti,
-    Dichiaranti = Reddito.imponibile...Frequenza,
-    Reddito = reddito_medio_dichiarato,
-    "Reddito medio" = reddito_medio_frequenza
-  ) %>%
-  arrange(desc(Contribuenti))
-
-write.csv(Dichiarazioni_2025, "Comuni_irpef_2025.csv")
-
-
-Redditometro_Comuni_tot_2025 = Dichiarazioni_2025_ %>%
-  mutate(
-    reddito_medio_dichiarato =
-      Reddito.imponibile...Ammontare.in.euro / Numero.contribuenti,
-    reddito_medio_frequenza = Reddito.imponibile...Ammontare.in.euro /
-      Reddito.imponibile...Frequenza
+      Reddito.imponibile...Frequenza,
+    reddito_medio_complessivo=Reddito.complessivo...Ammontare.in.euro/Numero.contribuenti
   ) %>%
   mutate_if(is.numeric, round, 2) %>%
   select(
@@ -54,6 +31,33 @@ Redditometro_Comuni_tot_2025 = Dichiarazioni_2025_ %>%
     Dichiaranti = Reddito.imponibile...Frequenza,
     Reddito = reddito_medio_dichiarato,
     "Reddito medio" = reddito_medio_frequenza,
+    "Reddito medio complessivo"=reddito_medio_complessivo
+  ) %>%
+  arrange(desc(Contribuenti))
+
+write.csv(Dichiarazioni_2025, "Comuni_irpef_2025.csv")
+
+
+Redditometro_Comuni_tot_2025 = Dichiarazioni_2025_ %>%
+  mutate(
+    reddito_medio_dichiarato =
+      Reddito.imponibile...Ammontare.in.euro / Numero.contribuenti,
+    reddito_medio_frequenza = Reddito.imponibile...Ammontare.in.euro /
+      Reddito.imponibile...Frequenza,
+    reddito_medio_complessivo=Reddito.complessivo...Ammontare.in.euro/Numero.contribuenti
+  ) %>%
+  mutate_if(is.numeric, round, 2) %>%
+  select(
+    Anno.di.imposta,
+    Codice.Istat = Codice.Istat.Comune,
+    Regione,
+    Sigla.Provincia,
+    Denominazione.Comune,
+    Contribuenti = Numero.contribuenti,
+    Dichiaranti = Reddito.imponibile...Frequenza,
+    Reddito = reddito_medio_dichiarato,
+    "Reddito medio" = reddito_medio_frequenza,
+    "Reddito medio complessivo"=reddito_medio_complessivo,
     matches("^Reddito\\.complessivo.*Frequenza$"))%>%
   rename_with(
     ~ str_remove_all(.x, "^Reddito\\.complessivo\\.|\\.euro\\.\\.\\.Frequenza$")
@@ -62,6 +66,40 @@ Redditometro_Comuni_tot_2025 = Dichiarazioni_2025_ %>%
   arrange(desc(Contribuenti))
 
 write.csv(Redditometro_Comuni_tot_2025, "Redditometro_Comuni_tot_2025.csv")
+
+
+Redditometro_Italia_2025 = Dichiarazioni_2025_ %>%
+  group_by(Anno.di.imposta) %>% 
+  summarise(
+    across(
+      where(is.numeric),   # Seleziona automaticamente solo le colonne numeriche
+      ~ sum(.x, na.rm = TRUE), # Applica la funzione sum. 'na.rm = TRUE' ignora i valori mancanti
+      .names = "{.col}" # Opzionale: rinomina le colonne di output aggiungendo un prefisso
+    )
+  )%>% 
+  ungroup()%>%
+  mutate(
+    reddito_medio_dichiarato =
+      Reddito.imponibile...Ammontare.in.euro / Numero.contribuenti,
+    reddito_medio_frequenza = Reddito.imponibile...Ammontare.in.euro /
+      Reddito.imponibile...Frequenza,
+    reddito_medio_complessivo=Reddito.complessivo...Ammontare.in.euro/Numero.contribuenti
+  ) %>%
+  mutate_if(is.numeric, round, 2) %>%
+  select(
+    Contribuenti = Numero.contribuenti,
+    Dichiaranti = Reddito.imponibile...Frequenza,
+    Reddito = reddito_medio_dichiarato,
+    "Reddito medio" = reddito_medio_frequenza,
+    "Reddito medio complessivo"=reddito_medio_complessivo,
+    matches("^Reddito\\.complessivo.*Frequenza$"))%>%
+  rename_with(
+    ~ str_remove_all(.x, "^Reddito\\.complessivo\\.|\\.euro\\.\\.\\.Frequenza$")
+  )%>%
+  select(-..Frequenza)%>%
+  arrange(desc(Contribuenti))
+
+write.csv(Redditometro_Italia_2025, "Redditometro_Italia_2025.csv")
 
 
 #REGIONI
@@ -130,7 +168,8 @@ Redditometro_Comuni_Cap_2025 = Dichiarazioni_2025_cap_ %>%
     reddito_medio_dichiarato =
       Reddito.imponibile...Ammontare.in.euro / Numero.contribuenti,
     reddito_medio_frequenza = Reddito.imponibile...Ammontare.in.euro /
-      Reddito.imponibile...Frequenza
+      Reddito.imponibile...Frequenza,
+    reddito_medio_complessivo=Reddito.complessivo...Ammontare.in.euro/Numero.contribuenti
   ) %>%
   mutate_if(is.numeric, round, 2) %>%
   select(
@@ -140,6 +179,7 @@ Redditometro_Comuni_Cap_2025 = Dichiarazioni_2025_cap_ %>%
     Dichiaranti = Reddito.imponibile...Frequenza,
     Reddito = reddito_medio_dichiarato,
     "Reddito medio" = reddito_medio_frequenza,
+    "Reddito medio complessivo"=reddito_medio_complessivo,
     matches("^Reddito\\.complessivo.*Frequenza$")
   ) %>%
   rename_with(~ str_remove_all(.x, "^Reddito\\.complessivo\\.|\\.euro\\.\\.\\.Frequenza$")) %>%
